@@ -1,0 +1,16 @@
+name: Backup and Deploy MySQL Database
+
+on:
+  workflow_dispatch:
+
+jobs:
+  backup-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - name: Create database dump on prod machine
+      run: |
+        ssh -i ${{ secrets.SSH_KEY }} prod@192.168.0.182 'mysqldump -u test_user -ppassword test_db > /home/prod/test_db_dump.sql'
+
+   
