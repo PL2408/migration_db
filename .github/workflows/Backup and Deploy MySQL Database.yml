@@ -11,7 +11,7 @@ jobs:
     
     - name: Create database dump on prod machine
       run: |
-        ssh -i prod@192.168.0.18
+        ssh -i /home/joomla/.ssh/id_rsa prod@192.168.0.18
         ls -la
         # ssh -i ${{ secrets.SSH_KEY }} ${{ secrets.LOGIN_USER }}@${{ secrets.LOGIN_HOST }} 'mysqldump -u ${{ secrets.DB_USER }} -p"${{ secrets.DB_PASSWORD }}" ${{ secrets.DB_NAME }} > /home/prod/test_db_dump.sql'
 
