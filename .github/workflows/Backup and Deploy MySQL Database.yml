@@ -25,6 +25,6 @@ jobs:
         username: ${{ secrets.DEV_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
-        script: scp -i ~/.ssh/scp /home/prod/test_db_dump.sql dev@192.168.0.181:/home/dev/
+        script: scp -i ~/.ssh/dev /home/prod/test_db_dump.sql dev@192.168.0.181:/home/dev/
 
    
