@@ -16,16 +16,11 @@ jobs:
         username: ${{ secrets.LOGIN_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
-        script: mysqldump -u "${{ secrets.DB_USER }}" -p"${{ secrets.DB_PASSWORD }}" "${{ secrets.DB_NAME }}" > /home/prod/test_db_dump.sql
-                # sleep 10
-   
-    - name: Copy Dump to Dev Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.LOGIN_HOST }}
-        username: ${{ secrets.LOGIN_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        port: ${{ secrets.PORT }}
-        script: scp -i ~/.ssh/dev /home/prod/test_db_dump.sql dev@192.168.0.181:/home/dev/
+        script: |
+          sudo -u prod bash <<EOF
+          mysqldump -u "${{ secrets.DB_USER }}" -p"${{ secrets.DB_PASSWORD }}" "${{ secrets.DB_NAME }}" > /home/prod/test_db_dump.sql
+          sleep 10
+          scp -i ~/.ssh/dev /home/prod/test_db_dump.sql dev@192.168.0.181:/home/dev/
+          EOF
 
    
