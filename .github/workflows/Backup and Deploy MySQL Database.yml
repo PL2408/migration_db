@@ -17,7 +17,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: mysqldump -u "${{ secrets.DB_USER }}" -p"${{ secrets.DB_PASSWORD }}" "${{ secrets.DB_NAME }}" > /home/prod/test_db_dump.sql
-                sleep 10
+                # sleep 10
     - name: Copy Dump to Dev Server
       uses: appleboy/ssh-action@v1.0.3
       with:
