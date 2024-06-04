@@ -25,6 +25,6 @@ jobs:
         username: ${{ secrets.DEV_USER }}
         key: ${{ secrets.DEV_SSH_KEY }}
         port: ${{ secrets.PORT }}
-        script: scp -i ${{ secrets.DEV_SSH_KEY }} /home/prod/test_db_dump.sql ${{ secrets.DEV_USER }}@${{ secrets.DEV_HOST }}:/home/dev/
+        script: scp -i "${{ secrets.DEV_SSH_KEY }}" /home/prod/test_db_dump.sql "${{ secrets.DEV_USER }}"@"${{ secrets.DEV_HOST }}":/home/dev/
 
    
