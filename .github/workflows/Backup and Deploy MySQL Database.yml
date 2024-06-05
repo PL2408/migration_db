@@ -24,9 +24,9 @@ jobs:
           prod_hash=$(md5sum /home/prod/test_db_dump.sql | awk '{ print $1 }')
           dev_hash=$(ssh -i ~/.ssh/dev dev@192.168.0.181 "md5sum /home/dev/test_db_dump.sql | awk '{ print \$1 }'")
           if [ "$prod_hash" == "$dev_hash" ]; then
-            echo "Hashes match: $prod_hash"
+            echo "Hashes match: OK"
           else
-            echo "Hashes do not match!"
+            echo "Hashes do not match!!!"
             exit 1
           fi
           EOF
