@@ -19,7 +19,7 @@ jobs:
         script: |
           bash <<EOF
           echo "Doing DB dump..."
-          export MYSQL_PWD="${{ DB_PASSWORD }}"
+          export MYSQL_PWD="${{ secrets.DB_PASSWORD }}"
           mysqldump -u "${{ secrets.DB_USER }}" "${{ secrets.DB_NAME }}" > /home/prod/test_db_dump.sql
           echo "Doing SCP to DEV server..."
           scp -i ~/.ssh/dev -o StrictHostKeyChecking=no /home/prod/test_db_dump.sql dev@192.168.1.110:/home/dev/
