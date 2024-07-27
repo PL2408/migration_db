@@ -7,6 +7,8 @@ jobs:
   backup-and-deploy:
     runs-on: self-hosted
 
+    environment: production
+
     steps:
     
     - name: executing remote ssh commands using ssh key
