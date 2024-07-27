@@ -17,12 +17,11 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          sudo -u prod bash <<EOF
+          bash <<EOF
           mysqldump -u "${{ secrets.DB_USER }}" -p"${{ secrets.DB_PASSWORD }}" "${{ secrets.DB_NAME }}" > /home/prod/test_db_dump.sql
-          sleep 10
-          scp -i ~/.ssh/dev /home/prod/test_db_dump.sql dev@192.168.1.110:/home/dev/
+          scp -i ~/.ssh/dev -o StrictHostKeyChecking=no /home/prod/test_db_dump.sql dev@192.168.1.110:/home/dev/
           prod_hash=$(md5sum /home/prod/test_db_dump.sql | awk '{ print $1 }')
-          dev_hash=$(ssh -i ~/.ssh/dev dev@192.168.1.110 "md5sum /home/dev/test_db_dump.sql | awk '{ print \$1 }'")
+          dev_hash=$(ssh -i ~/.ssh/dev dev@192.168.1.110 -o StrictHostKeyChecking=no "md5sum /home/dev/test_db_dump.sql | awk '{ print \$1 }'")
           if [ "$prod_hash" == "$dev_hash" ]; then
             echo "Hashes match: OK"
           else
