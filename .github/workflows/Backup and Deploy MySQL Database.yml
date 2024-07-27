@@ -7,7 +7,7 @@ jobs:
   backup-and-deploy:
     runs-on: self-hosted
 
-    environment: production
+    environment: MYSQL_PASSWORD
 
     steps:
     
