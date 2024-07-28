@@ -25,6 +25,7 @@ jobs:
           echo "Doing SCP to DEV server..."
           mkdir -p /home/${{ vars.SRC_HOST_USER }}/.ssh
           echo "${{ secrets.DST_HOST_SSH_KEY }}" > /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
+          chmod 400 /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
           scp -o StrictHostKeyChecking=no /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql dev@${{ vars.DST_HOST_IP }}:/home/dev/
           
           echo "Getting hash of the DB Dump on Prod..."
@@ -32,6 +33,8 @@ jobs:
           
           echo "Getting hash of the DB Dump on Dev..."
           dev_hash=$(ssh dev@${{ vars.DST_HOST_IP }} -o StrictHostKeyChecking=no "md5sum /home/dev/test_db_dump.sql | awk '{ print \$1 }'")
+          
+          
           
           echo "Comparing Dev and Prod hashes..."
           if [ "$prod_hash" == "$dev_hash" ]; then
