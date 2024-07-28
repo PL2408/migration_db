@@ -28,12 +28,19 @@ jobs:
           chmod 400 /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
           scp -o StrictHostKeyChecking=no /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql dev@${{ vars.DST_HOST_IP }}:/home/dev/
           
+          echo "Track SSH key"
+          ll /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
+          echo "/home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa"
+          
           echo "Getting hash of the DB Dump on Prod..."
           prod_hash=$(md5sum /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql | awk '{ print $1 }')
           
           echo "Getting hash of the DB Dump on Dev..."
           dev_hash=$(ssh dev@${{ vars.DST_HOST_IP }} -o StrictHostKeyChecking=no "md5sum /home/dev/test_db_dump.sql | awk '{ print \$1 }'")
           rm -rf /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
+          
+          echo "Track SSH key"
+          ll "/home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa"
           
           echo "Comparing Dev and Prod hashes..."
           if [ "$prod_hash" == "$dev_hash" ]; then
