@@ -63,7 +63,7 @@ jobs:
 
   DB-Restore:
     runs-on: self-hosted
-
+    needs: DB-Backup
     steps:
     - name: Restore DST DB from dump
       uses: appleboy/ssh-action@v1.0.3
@@ -74,7 +74,7 @@ jobs:
         port: ${{ vars.DST_HOST_PORT }}
         script: |
           bash <<EOF
-          echo "Doing DB dump..."
+          echo "Doing DB restore..."
           export MYSQL_PWD="${{ secrets.DST_DB_PASS }}"
           mysql -u "${{ secrets.DST_DB_USER }}" ${{ secrets.DST_DB_NAME }} < /home/dev/test_db_dump.sql
           EOF   
