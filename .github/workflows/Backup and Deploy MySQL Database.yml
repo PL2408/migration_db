@@ -29,7 +29,7 @@ jobs:
           scp -o StrictHostKeyChecking=no /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql dev@${{ vars.DST_HOST_IP }}:/home/dev/
           
           echo "Track SSH key"
-          ll /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
+          ls -l /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
           echo "/home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa"
           
           echo "Getting hash of the DB Dump on Prod..."
@@ -40,7 +40,7 @@ jobs:
           rm -rf /home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa
           
           echo "Track SSH key"
-          ll "/home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa"
+          ls -l "/home/${{ vars.SRC_HOST_USER }}/.ssh/id_rsa"
           
           echo "Comparing Dev and Prod hashes..."
           if [ "$prod_hash" == "$dev_hash" ]; then
