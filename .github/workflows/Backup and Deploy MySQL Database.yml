@@ -23,6 +23,7 @@ jobs:
           mysqldump -u "${{ secrets.SRC_DB_USER }}" "${{ secrets.SRC_DB_NAME }}" > /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql
           
           echo "Doing SCP to DEV server..."
+          mkdir -p /home/${{ vars.SRC_HOST_USER }}/.ssh
           scp -o StrictHostKeyChecking=no /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql dev@${{ vars.DST_HOST_IP }}:/home/dev/
           
           echo "Getting hash of the DB Dump on Prod..."
