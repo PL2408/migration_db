@@ -9,7 +9,7 @@ jobs:
 
     steps:
     
-    - name: executing remote ssh commands using ssh key
+    - name: Making DB dump on SRC host
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ vars.SRC_HOST_IP }}
@@ -21,17 +21,39 @@ jobs:
           echo "Doing DB dump..."
           export MYSQL_PWD="${{ secrets.SRC_DB_PASS }}"
           mysqldump -u "${{ secrets.SRC_DB_USER }}" "${{ secrets.SRC_DB_NAME }}" > /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql
-          
+          EOF
+
+    - name: Copy DB dump to DST host
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ vars.SRC_HOST_IP }}
+        username: ${{ vars.SRC_HOST_USER }}
+        key: ${{ secrets.SRC_HOST_SSH_KEY }}
+        port: ${{ vars.SRC_HOST_PORT }}
+        script: |
+          bash <<EOF
           echo "Doing SCP to DEV server..."
           scp -o StrictHostKeyChecking=no /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql dev@${{ vars.DST_HOST_IP }}:/home/dev/
-          
-          echo "Getting hash of the DB Dump on Prod..."
+          EOF
+
+    - name: Verify DB dump checksum
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ vars.SRC_HOST_IP }}
+        username: ${{ vars.SRC_HOST_USER }}
+        key: ${{ secrets.SRC_HOST_SSH_KEY }}
+        port: ${{ vars.SRC_HOST_PORT }}
+        script: |
+          bash <<EOF
+          echo "Getting hash of the DB Dump on SRC..."
           prod_hash=$(md5sum /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql | awk '{ print $1 }')
+          echo "SRC: $prod_hash"
           
           echo "Getting hash of the DB Dump on Dev..."
           dev_hash=$(ssh dev@${{ vars.DST_HOST_IP }} -o StrictHostKeyChecking=no "md5sum /home/dev/test_db_dump.sql | awk '{ print \$1 }'")
+          echo "DST: $dev_hash"
           
-          echo "Comparing Dev and Prod hashes..."
+          echo "Comparing SRC and DST hashes..."
           if [ "$prod_hash" == "$dev_hash" ]; then
             echo "Hashes match: OK"
           else
@@ -39,5 +61,4 @@ jobs:
             exit 1
           fi
           EOF
-
    
