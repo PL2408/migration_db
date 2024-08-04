@@ -127,21 +127,12 @@ jobs:
             restore_status="🔴"
           fi
           
-          message="🛢️ DB Migration: <b>PROD -> DEV FINISHED</b>"
-          message="$message  ------------------------------"
-          message="$message  $backup_status DB-Backup"
-          message="$message  $copy_status DB-Copy"
-          message="$message  $restore_status DB-Restore"
-          
-          message=$(cat <<-END
-              🛢️ DB Migration: *PROD -> DEV FINISHED*
-              ------------------------------
-              $backup_status DB-Backup
-              $copy_status DB-Copy
-          
-              $restore_status DB-Restore
-          END)
-          
+          message="🛢️ DB Migration: PROD -> DEV FINISHED"
+          message="$message\n------------------------------"
+          message="$message\n$backup_status DB-Backup"
+          message="$message\n$copy_status DB-Copy"
+          message="$message\n$restore_status DB-Restore"
+                  
           echo "::set-output name=message::$message"
 
       - name: Send telegram message about DB migration finish
