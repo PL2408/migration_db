@@ -127,10 +127,11 @@ jobs:
             restore_status="🔴"
           fi
           
-          message="🛢️ DB Migration: *PROD -> DEV FINISHED*<br />"
-          message="$message<br />$backup_status DB-Backup"
-          message="$message<br />$copy_status DB-Copy"
-          message="$message<br />$restore_status DB-Restore"
+          message="🛢️ DB Migration: *PROD -> DEV FINISHED*"
+          message="$message\s------------------------"
+          message="$message\s$backup_status DB-Backup"
+          message="$message\s$copy_status DB-Copy"
+          message="$message\s$restore_status DB-Restore"
           
           echo "::set-output name=message::$message"
 
