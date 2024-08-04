@@ -14,7 +14,9 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
           message: |
-            🛢️ DB Migration: *PROD -> DEV ✨ STARTED*
+            🛢️ DB Migration: *PROD -> DEV* 
+            ------------------------------
+            ✨ *STARTED*
 
   DB-Backup:
     runs-on: self-hosted
@@ -125,10 +127,10 @@ jobs:
             restore_status="🔴"
           fi
           
-          message="🛢️ DB Migration: *PROD -> DEV* FINISHED\n"
-          message="$message\n$backup_status DB-Backup"
-          message="$message\n$copy_status DB-Copy"
-          message="$message\n$restore_status DB-Restore"
+          message="🛢️ DB Migration: *PROD -> DEV FINISHED*<br />"
+          message="$message<br />$backup_status DB-Backup"
+          message="$message<br />$copy_status DB-Copy"
+          message="$message<br />$restore_status DB-Restore"
           
           echo "::set-output name=message::$message"
 
