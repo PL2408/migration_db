@@ -13,9 +13,8 @@ jobs:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            Job for migration DB from PROD to DEV
-            
-            is started
+            🛢🛢️ DB Migration: PROD -> DEV
+            🟣🟢🔴 is started
 
   DB-Backup:
     runs-on: self-hosted
