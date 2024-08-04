@@ -105,33 +105,30 @@ jobs:
       - name: Set message
         id: set-message
         run: |
-          backup_status="⚪"
-          copy_status="⚪"
-          restore_status="⚪"
+          echo "backup_status=⚪" >> $GITHUB_ENV
+          echo "copy_status=⚪" >> $GITHUB_ENV
+          echo "restore_status=⚪" >> $GITHUB_ENV
           
           if [ "${{ needs.DB-Backup.result }}" == "success" ]; then
-            backup_status="🟢"
+            echo "backup_status=🟢" >> $GITHUB_ENV
           elif [ "${{ needs.DB-Backup.result }}" == "failure" ]; then
-            backup_status="🔴"
+            echo "backup_status=🔴" >> $GITHUB_ENV
           fi
           
           if [ "${{ needs.DB-Copy.result }}" == "success" ]; then
-            copy_status="🟢"
+            echo "copy_status=🟢" >> $GITHUB_ENV
           elif [ "${{ needs.DB-Copy.result }}" == "failure" ]; then
-            copy_status="🔴"
+            echo "copy_status=🔴" >> $GITHUB_ENV
           fi
           
           if [ "${{ needs.DB-Restore.result }}" == "success" ]; then
-            restore_status="🟢"
+            echo "restore_status=🟢" >> $GITHUB_ENV
           elif [ "${{ needs.DB-Restore.result }}" == "failure" ]; then
-            restore_status="🔴"
+            echo "restore_status=🔴" >> $GITHUB_ENV
           fi
           
           message="🛢️ DB Migration: PROD -> DEV FINISHED"
-          message="$message\n\n------------------------------"
-          message="$message\n\n$backup_status DB-Backup"
-          message="$message\n\n$copy_status DB-Copy"
-          message="$message\n\n$restore_status DB-Restore"
+
                   
           echo "::set-output name=message::$message"
 
@@ -141,4 +138,9 @@ jobs:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: html
-          message: ${{ steps.set-message.outputs.message }}
+          message: |
+            🛢️ DB Migration: PROD -> DEV FINISHED
+            -----------------------------
+            $backup_status DB-Backup
+            $copy_status DB-Copy
+            $restore_status DB-Restore
