@@ -13,9 +13,9 @@ jobs:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🛢️ DB Migration: <b>PROD -> DEV</b>
+            🛢️ DB Migration: *PROD -> DEV*
             
-            🟡 <b>is started</b>
+            🟡 *is started*
           #🟢🔴 ✨
 
   DB-Backup:
