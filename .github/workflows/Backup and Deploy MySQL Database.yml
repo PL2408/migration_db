@@ -132,10 +132,12 @@ jobs:
         with:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: html
+          format: markdown
           message: |
-            🛢️ DB Migration: PROD -> DEV FINISHED
+            🛢️ DB Migration: *PROD -> DEV FINISHED*
             -----------------------------
-            $backup_status DB-Backup
-            $copy_status DB-Copy
-            $restore_status DB-Restore
+            ${{ env.backup_status }} DB-Backup
+            ${{ env.copy_status }} DB-Copy
+            ${{ env.restore_status }} DB-Restore
+            -----------------------------
+            🏴‍☠️ *FINITA*
