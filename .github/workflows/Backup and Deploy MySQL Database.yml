@@ -14,14 +14,11 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
           message: |
-            🛢️ DB Migration: *PROD -> DEV*
-            
-            🟡 *is started*
-          #🟢🔴 ✨
+            🛢️ DB Migration: *PROD -> DEV ✨ STARTED*
 
   DB-Backup:
     runs-on: self-hosted
-
+    needs: TG-Start-Notification
     steps:
     - name: Make DB dump on SRC host
       uses: appleboy/ssh-action@v1.0.3
@@ -37,6 +34,10 @@ jobs:
           mysqldump -u "${{ secrets.SRC_DB_USER }}" "${{ secrets.SRC_DB_NAME }}" > /home/${{ vars.SRC_HOST_USER }}/test_db_dump.sql
           EOF
 
+  DB-Copy:
+    runs-on: self-hosted
+    needs: DB-Backup
+    steps:
     - name: Copy DB dump to DST host
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -78,7 +79,7 @@ jobs:
 
   DB-Restore:
     runs-on: self-hosted
-    needs: DB-Backup
+    needs: DB-Copy
     steps:
     - name: Restore DST DB from dump
       uses: appleboy/ssh-action@v1.0.3
@@ -93,3 +94,48 @@ jobs:
           export MYSQL_PWD="${{ secrets.DST_DB_PASS }}"
           mysql -u "${{ secrets.DST_DB_USER }}" ${{ secrets.DST_DB_NAME }} < /home/dev/test_db_dump.sql
           EOF   
+
+  TG-Finish-Notification:
+    runs-on: self-hosted
+    needs: [ DB-Backup, DB-Copy, DB-Restore ]
+    if: always()
+    steps:
+      - name: Set message
+        id: set-message
+        run: |
+          backup_status="⚪"
+          copy_status="⚪"
+          restore_status="⚪"
+          
+          if [ "${{ needs.DB-Backup.result }}" == "success" ]; then
+            backup_status="🟢"
+          elif [ "${{ needs.DB-Backup.result }}" == "failure" ]; then
+            backup_status="🔴"
+          fi
+          
+          if [ "${{ needs.DB-Copy.result }}" == "success" ]; then
+            copy_status="🟢"
+          elif [ "${{ needs.DB-Copy.result }}" == "failure" ]; then
+            copy_status="🔴"
+          fi
+          
+          if [ "${{ needs.DB-Restore.result }}" == "success" ]; then
+            restore_status="🟢"
+          elif [ "${{ needs.DB-Restore.result }}" == "failure" ]; then
+            restore_status="🔴"
+          fi
+          
+          message="🛢️ DB Migration: *PROD -> DEV* FINISHED\n"
+          message="$message\n$backup_status DB-Backup"
+          message="$message\n$copy_status DB-Copy"
+          message="$message\n$restore_status DB-Restore"
+          
+          echo "::set-output name=message::$message"
+
+      - name: Send telegram message about DB migration finish
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ vars.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: ${{ steps.set-message.outputs.message }}
