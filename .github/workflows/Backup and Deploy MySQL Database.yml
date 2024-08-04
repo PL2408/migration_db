@@ -4,6 +4,18 @@ on:
   workflow_dispatch:
 
 jobs:
+  TG-Start-Notification:
+    runs-on: self-hosted
+    steps:
+      - name: Send telegram message about DB migration start
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ vars.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Job for migration DB from PROD to DEV
+            is started
+
   DB-Backup:
     runs-on: self-hosted
 
