@@ -133,6 +133,15 @@ jobs:
           message="$message  $copy_status DB-Copy"
           message="$message  $restore_status DB-Restore"
           
+          message=$(cat <<-END
+              🛢️ DB Migration: *PROD -> DEV FINISHED*
+              ------------------------------
+              $backup_status DB-Backup
+              $copy_status DB-Copy
+          
+              $restore_status DB-Restore
+          END)
+          
           echo "::set-output name=message::$message"
 
       - name: Send telegram message about DB migration finish
@@ -140,5 +149,5 @@ jobs:
         with:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: html
+          format: markdown
           message: ${{ steps.set-message.outputs.message }}
