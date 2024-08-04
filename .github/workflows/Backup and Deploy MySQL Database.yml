@@ -126,11 +126,6 @@ jobs:
           elif [ "${{ needs.DB-Restore.result }}" == "failure" ]; then
             echo "restore_status=🔴" >> $GITHUB_ENV
           fi
-          
-          message="🛢️ DB Migration: PROD -> DEV FINISHED"
-
-                  
-          echo "::set-output name=message::$message"
 
       - name: Send telegram message about DB migration finish
         uses: appleboy/telegram-action@master
