@@ -14,9 +14,9 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
           message: |
-            🛢️ DB Migration: *PROD -> DEV* 
+            #🛢️ DB Migration: *PROD -> DEV* 
             ------------------------------
-            ✨ *STARTED*
+            #✨ *STARTED*
 
   DB-Backup:
     runs-on: self-hosted
@@ -134,10 +134,10 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
           message: |
-            🛢️ DB Migration: *PROD -> DEV FINISHED*
+            #🛢️ DB Migration: *PROD -> DEV FINISHED*
             -----------------------------
             ${{ env.backup_status }} DB-Backup
             ${{ env.copy_status }} DB-Copy
             ${{ env.restore_status }} DB-Restore
             -----------------------------
-            🏴‍☠️ *FINITA*
+            #🏴‍☠️ *FINITA*
