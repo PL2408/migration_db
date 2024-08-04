@@ -126,6 +126,14 @@ jobs:
           elif [ "${{ needs.DB-Restore.result }}" == "failure" ]; then
             echo "restore_status=🔴" >> $GITHUB_ENV
           fi
+          
+          if [ "${{ needs.DB-Backup.result }}" == "success" ] && \
+             [ "${{ needs.DB-Copy.result }}" == "success" ] && \
+             [ "${{ needs.DB-Restore.result }}" == "success" ]; then
+            echo "result=✅️ *SUCCESS*" >> $GITHUB_ENV
+          else
+            echo "result=❌ *FAIL*" >> $GITHUB_ENV
+          fi
 
       - name: Send telegram message about DB migration finish
         uses: appleboy/telegram-action@master
@@ -134,10 +142,10 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
           message: |
-            #🛢️ DB Migration: *PROD -> DEV FINISHED*
+            🛢️ DB Migration: *PROD -> DEV STATUS*
             -----------------------------
             ${{ env.backup_status }} DB-Backup
             ${{ env.copy_status }} DB-Copy
             ${{ env.restore_status }} DB-Restore
             -----------------------------
-            #🏴‍☠️ *FINITA*
+            ${{ env.result }}
