@@ -127,8 +127,8 @@ jobs:
             restore_status="🔴"
           fi
           
-          message="🛢️ DB Migration: *PROD -> DEV FINISHED*"
-          message="$message<br>------------------------"
+          message="🛢️ DB Migration: <b>PROD -> DEV FINISHED</b>"
+          message="$message<br>------------------------------"
           message="$message<br>$backup_status DB-Backup"
           message="$message<br>$copy_status DB-Copy"
           message="$message<br>$restore_status DB-Restore"
@@ -140,5 +140,5 @@ jobs:
         with:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: markdown
+          format: html
           message: ${{ steps.set-message.outputs.message }}
