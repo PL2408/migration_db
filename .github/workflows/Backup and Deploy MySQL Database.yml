@@ -12,6 +12,7 @@ jobs:
         with:
           to: ${{ vars.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
           message: |
             🛢️ DB Migration: *PROD -> DEV*
             
